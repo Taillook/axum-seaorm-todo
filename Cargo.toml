@@ -1,0 +1,70 @@
+[[bin]]
+name = 'server'
+path = 'src/main.rs'
+
+[package]
+name = 'api'
+version = '0.1.0'
+edition = '2018'
+
+[dependencies]
+serde_json = '1.0.59'
+tracing = '0.1'
+env_logger = '0.9.0'
+tower = '0.4.11'
+jsonwebtoken = '7'
+anyhow = '1.0'
+chrono = '0.4'
+
+[dependencies.todo]
+path = './src/openapi/todo'
+
+[dependencies.serde]
+version = '^1.0.132'
+features = ['derive']
+
+[dependencies.reqwest]
+version = '0.11'
+features = [
+    'blocking',
+    'json',
+]
+
+[dependencies.axum]
+version = '0.4.3'
+features = ['headers']
+
+[dependencies.tokio]
+version = '1'
+features = ['full']
+
+[dependencies.tower-http]
+version = '0.2.0'
+features = [
+    'trace',
+    'cors',
+    'set-header',
+]
+
+[dependencies.sea-orm]
+version = '0.4.2'
+features = [
+    'sqlx-mysql',
+    'runtime-tokio-native-tls',
+    'macros',
+]
+default-features = false
+
+[dev-dependencies]
+hyper = '0.14.16'
+httpmock = '0.6'
+
+[dev-dependencies.sea-orm]
+version = '0.4.2'
+features = [
+    'mock',
+    'debug-print',
+]
+
+[profile.release]
+opt-level = 3

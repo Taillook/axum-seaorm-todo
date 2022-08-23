@@ -1,0 +1,48 @@
+version: "3.9"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile.dev
+    environment:
+      RUST_LOG: api=trace,tower_http=trace
+      DB_HOST: mysql://root:password@host.docker.internal/todo
+      API_KEY: hoge
+      PORT: 3080
+
+    ports:
+      - "3080:3080"
+    volumes:
+      - .:/app
+      - cargo-cache:/usr/local/cargo/registry
+      - target-cache:/app/target
+    command: /bin/sh -c "cargo watch -x run"
+    depends_on:
+      - mysql
+    networks:
+      - default
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    networks:
+      - default
+    ports:
+      - 3306:3306
+    command: mysqld
+    volumes:
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - db-store:/var/lib/mysql
+  mysqldef:
+    build:
+      context: .
+      dockerfile: ./docker/mysqldef/Dockerfile
+    tty: true
+    volumes:
+      - ./schema:/schema
+    networks:
+      - default
+volumes:
+  cargo-cache:
+  target-cache:
+  db-store:
